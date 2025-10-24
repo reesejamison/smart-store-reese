@@ -16,25 +16,23 @@ classifiers = [
 ]
 description = "Professional Python starter project using uv and a src layout"
 license = "MIT"
-name = "analytics-project" # PACKAGE name (matches src folder except with dashes)
+name = "smart-store-reese" # PACKAGE name (matches src folder except with dashes)
 readme = "README.md"
 requires-python = ">=3.12"
 version = "0.0.1"
 
 dependencies = [ # fmt: off
   "loguru",      # Better than print() - practice production logging with levels
-  "matplotlib",  # Industry standard plotting
   "pandas",      # THE data manipulation tool in analytics
-  "seaborn",     # Statistical charts built on matplotlib
   "ipython",     # Enhanced Python shell (needed for notebooks)
   "ipykernel",   # Jupyter kernel for notebooks
 ]  # fmt: on
 
 [project.urls]
-"Bug Tracker" = "https://github.com/denisecase/pro-analytics-02-starter/issues"
-Documentation = "https://denisecase.github.io/pro-analytics-02-starter/"
-Homepage = "https://github.com/denisecase/pro-analytics-02-starter"
-Repository = "https://github.com/denisecase/pro-analytics-02-starter"
+"Bug Tracker" = "https://github.com/reesejamison/smart-store-reese/issues"
+Documentation = "https://github.com/reesejamison/smart-store-reese"
+Homepage = "https://github.com/reesejamison/smart-store-reese"
+Repository = "https://github.com/reesejamison/smart-store-reese"
 
 [project.optional-dependencies]
 dev = [
