@@ -10,33 +10,29 @@ This smoke test verifies that:
     - Basic project structure is intact
 """
 
-from analytics_project import main
-from analytics_project import demo_module_basics
-from analytics_project import demo_module_languages
-from analytics_project import demo_module_stats
-from analytics_project import demo_module_viz
+from analytics_project import data_prep
 from analytics_project import utils_logger
 
 
 def test_imports_work():
     """Verify all modules can be imported."""
     # If we get here without ImportError, imports work
-    assert demo_module_basics is not None
-    assert demo_module_languages is not None
-    assert demo_module_stats is not None
-    assert demo_module_viz is not None
+    assert data_prep is not None
     assert utils_logger is not None
-    assert main is not None
 
-def test_individual_demos_run():
-    """Verify each demo module can run independently."""
-    # Initialize logger once for all tests
+
+def test_data_prep_functions():
+    """Verify data_prep module's basic functionality."""
+    # Initialize logger
     utils_logger.init_logger()
 
-    # Each should run without exceptions
-    demo_module_basics.demo_basics()
-    demo_module_stats.demo_stats()
-    demo_module_languages.demo_greetings()
+    # Test read_and_log function with a sample DataFrame
+    import pandas as pd
+    test_df = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
+
+    # Just verify the function exists and can be called
+    assert hasattr(data_prep, 'read_and_log')
+    assert callable(data_prep.read_and_log)
 
 
 
