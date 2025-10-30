@@ -1,7 +1,19 @@
-# Pro Analytics 02 Python Starter Repository
+# Pro Analytics 02 - Business Intelligence with Python
 
-> Use this repo to start a professional Python project.
+> A professional Python project for reading and analyzing business data using pandas DataFrames.
 
+## Project Overview
+
+This project demonstrates how to:
+- Set up a professional Python development environment
+- Read raw CSV data files into pandas DataFrames for analysis
+- Use logging to track data processing steps
+- Implement reusable data processing functions
+- Follow professional Git workflow practices
+
+Key files:
+- `src/analytics_project/data_prep.py`: Main data preparation module
+- `data/raw/*.csv`: Raw data files (customers, products, sales)
 - Additional information: <https://github.com/denisecase/pro-analytics-02>
 - Project organization: [STRUCTURE](./STRUCTURE.md)
 - Build professional skills:
@@ -143,7 +155,47 @@ If this works, your project is ready! If not, check:
 
 ---
 
-### 3.5 Git add-commit-push to GitHub
+### 3.5 Local Commands I Ran
+
+Here are the specific commands I used to set up and run this project:
+
+```shell
+# 1. Create & activate a local venv
+python -m venv .venv
+# Windows (PowerShell)
+.\.venv\Scripts\Activate.ps1
+
+# 2. Install dependencies (if using project tooling)
+uv sync --extra dev --extra docs --upgrade
+
+# 3. Create and run the data prep module
+# Created src/analytics_project/data_prep.py in VS Code
+# Then ran:
+python -m analytics_project.data_prep
+
+# 4. Git workflow - initial commit
+git add .
+git commit -m "add starter files"
+git push -u origin main
+
+# 5. Git workflow - README updates
+git add .
+git commit -m "Update README with commands"
+git push
+```
+
+Notes:
+- The module `main` calls `read_and_log` to load CSVs under `data/raw`
+- Three DataFrames are created: customers, products, and sales
+- Logging is initialized via `init_logger`; check both:
+  - Terminal output for immediate feedback
+  - Log file for detailed processing records
+- Always run Python modules from the project root folder
+- Use descriptive commit messages in present tense
+
+---
+
+### 3.6 Git add-commit-push to GitHub
 
 Anytime we make working changes to code is a good time to git add-commit-push to GitHub.
 
