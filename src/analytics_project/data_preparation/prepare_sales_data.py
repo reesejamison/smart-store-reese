@@ -1,5 +1,4 @@
-"""
-data_preparation/prepare_sales_data.py
+"""Clean and prepare sales data for ETL processes.
 
 This script reads sales data from the data/raw folder, cleans the data,
 and writes the cleaned version to the data/prepared folder.
@@ -28,13 +27,12 @@ import sys
 # Import from external packages (requires a virtual environment)
 import pandas as pd
 
-# Ensure project root is in sys.path for local imports
+# Import local modules - need to set path first
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent.parent
-sys.path.append(str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT))
 
-# Import local modules
-from src.analytics_project.utils.logger import logger, configure_logger
-from src.analytics_project.utils.data_scrubber import DataScrubber
+from src.analytics_project.utils.data_scrubber import DataScrubber  # noqa: E402
+from src.analytics_project.utils.logger import configure_logger, logger  # noqa: E402
 
 # Configure logger for this script
 configure_logger("prepare_sales")
@@ -293,9 +291,7 @@ def remove_outliers(df: pd.DataFrame) -> pd.DataFrame:
 #####################################
 
 def main() -> None:
-    """
-    Main function for processing sales data.
-    """
+    """Process sales data for ETL preparation."""
     logger.info("=" * 50)
     logger.info("STARTING prepare_sales_data.py")
     logger.info("=" * 50)
@@ -326,7 +322,7 @@ def main() -> None:
     df.columns = df.columns.str.strip()
 
     # Log if any column names changed
-    changed_columns = [f"{old} -> {new}" for old, new in zip(original_columns, df.columns) if old != new]
+    changed_columns = [f"{old} -> {new}" for old, new in zip(original_columns, df.columns, strict=True) if old != new]
     if changed_columns:
         logger.info(f"Cleaned column names: {', '.join(changed_columns)}")
 

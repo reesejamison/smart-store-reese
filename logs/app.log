@@ -183,3 +183,43 @@ dtype: int64
 2025-11-06 08:54:13 | INFO     | __main__:main - ==================================================
 2025-11-06 08:54:13 | INFO     | __main__:main - FINISHED prepare_sales_data.py
 2025-11-06 08:54:13 | INFO     | __main__:main - ==================================================
+2025-11-06 09:16:44 | INFO     | src.analytics_project.utils.logger:configure_logger - Logger configured. Logging to: C:\Users\IIUCX2X\GithubProjects\GitHub\reesej\smart-store-reese\logs\app.log
+2025-11-06 09:16:44 | INFO     | __main__:main - ==================================================
+2025-11-06 09:16:44 | INFO     | __main__:main - STARTING prepare_customers_data.py
+2025-11-06 09:16:44 | INFO     | __main__:main - ==================================================
+2025-11-06 09:16:44 | INFO     | __main__:main - Project Root : C:\Users\IIUCX2X\GithubProjects\GitHub\reesej\smart-store-reese
+2025-11-06 09:16:44 | INFO     | __main__:main - data/raw     : C:\Users\IIUCX2X\GithubProjects\GitHub\reesej\smart-store-reese\data\raw
+2025-11-06 09:16:44 | INFO     | __main__:main - data/prepared: C:\Users\IIUCX2X\GithubProjects\GitHub\reesej\smart-store-reese\data\prepared
+2025-11-06 09:16:44 | INFO     | __main__:read_raw_data - READING: C:\Users\IIUCX2X\GithubProjects\GitHub\reesej\smart-store-reese\data\raw\customers_data.csv
+2025-11-06 09:16:44 | INFO     | __main__:main - Initial dataframe columns: CustomerID, Name, Region, JoinDate, LoyaltyPoints, PreferredContact
+2025-11-06 09:16:44 | INFO     | __main__:main - Initial dataframe shape: (201, 6)
+2025-11-06 09:16:44 | INFO     | __main__:remove_duplicates - FUNCTION START: remove_duplicates with dataframe shape=(201, 6)
+2025-11-06 09:16:44 | INFO     | src.analytics_project.utils.data_scrubber:remove_duplicate_records - Removed 1 duplicate records
+2025-11-06 09:16:44 | INFO     | __main__:remove_duplicates - Original dataframe shape: (201, 6)
+2025-11-06 09:16:44 | INFO     | __main__:remove_duplicates - Deduped  dataframe shape: (200, 6)
+2025-11-06 09:16:44 | INFO     | __main__:handle_missing_values - FUNCTION START: handle_missing_values with dataframe shape=(200, 6)
+2025-11-06 09:16:44 | INFO     | __main__:handle_missing_values - Missing values before handling:
+LoyaltyPoints        3
+PreferredContact    32
+dtype: int64
+2025-11-06 09:16:44 | INFO     | src.analytics_project.utils.data_scrubber:replace_placeholders - Replaced placeholder values with NaN
+2025-11-06 09:16:44 | INFO     | __main__:handle_missing_values - All missing values handled successfully
+2025-11-06 09:16:44 | INFO     | __main__:handle_missing_values - 200 records remaining after handling missing values
+2025-11-06 09:16:44 | INFO     | __main__:standardize_data - FUNCTION START: standardize_data with dataframe shape=(200, 6)
+2025-11-06 09:16:44 | INFO     | __main__:standardize_data - Standardized Region values: ['West' 'East' 'Central' 'North' 'South' 'Southwest']
+2025-11-06 09:16:44 | INFO     | __main__:standardize_data - Standardized PreferredContact values: ['Email' 'Phone' 'Mail' 'Text' 'SMS']
+2025-11-06 09:16:44 | INFO     | __main__:standardize_data - Data standardization complete
+2025-11-06 09:16:44 | INFO     | __main__:remove_outliers - FUNCTION START: remove_outliers with dataframe shape=(200, 6)
+2025-11-06 09:16:44 | INFO     | __main__:remove_outliers - Removed 2 rows with negative LoyaltyPoints
+2025-11-06 09:16:44 | INFO     | __main__:remove_outliers - Removed 5 rows with LoyaltyPoints > 10,000
+2025-11-06 09:16:44 | INFO     | __main__:remove_outliers - Removed 7 outlier rows total
+2025-11-06 09:16:44 | INFO     | __main__:remove_outliers - 193 records remaining after removing outliers
+2025-11-06 09:16:44 | INFO     | __main__:save_prepared_data - FUNCTION START: save_prepared_data with file_name=customers_prepared.csv, dataframe shape=(193, 6)
+2025-11-06 09:16:44 | INFO     | __main__:save_prepared_data - Data saved to C:\Users\IIUCX2X\GithubProjects\GitHub\reesej\smart-store-reese\data\prepared\customers_prepared.csv
+2025-11-06 09:16:44 | INFO     | __main__:main - ==================================================
+2025-11-06 09:16:44 | INFO     | __main__:main - Original shape: (201, 6)
+2025-11-06 09:16:44 | INFO     | __main__:main - Cleaned shape:  (193, 6)
+2025-11-06 09:16:44 | INFO     | __main__:main - Records removed: 8
+2025-11-06 09:16:44 | INFO     | __main__:main - ==================================================
+2025-11-06 09:16:44 | INFO     | __main__:main - FINISHED prepare_customers_data.py
+2025-11-06 09:16:44 | INFO     | __main__:main - ==================================================

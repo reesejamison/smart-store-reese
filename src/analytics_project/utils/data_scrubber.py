@@ -1,7 +1,5 @@
-"""
-utils/data_scrubber.py
+"""Utility class for common data cleaning tasks.
 
-Utility class for common data cleaning tasks.
 Provides reusable methods for removing duplicates, handling missing values,
 and standardizing data formats.
 """
@@ -63,7 +61,7 @@ class DataScrubber:
         original_columns = self.df.columns.tolist()
         self.df.columns = self.df.columns.str.strip().str.lower()
 
-        changed = [f"{old} -> {new}" for old, new in zip(original_columns, self.df.columns) if old != new]
+        changed = [f"{old} -> {new}" for old, new in zip(original_columns, self.df.columns, strict=True) if old != new]
         if changed:
             logger.info(f"Standardized column names: {', '.join(changed)}")
 
