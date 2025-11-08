@@ -16,7 +16,7 @@ Use this class to perform similar cleaning operations across multiple files.
 
 Example:
     from analytics_project.utils.data_scrubber import DataScrubber
-    
+
     scrubber = DataScrubber(df)
     df = scrubber.remove_duplicate_records().handle_missing_data(fill_value="N/A")
 """
@@ -217,7 +217,7 @@ class DataScrubber:
         logger.info(f"Dropped columns: {', '.join(columns)}")
         return self.df
 
-    def filter_column_outliers(self, column: str, lower_bound: Union[float, int], 
+    def filter_column_outliers(self, column: str, lower_bound: Union[float, int],
                               upper_bound: Union[float, int]) -> pd.DataFrame:
         """
         Filter outliers in a specified column based on lower and upper bounds.
@@ -282,7 +282,7 @@ class DataScrubber:
         except KeyError:
             raise ValueError(f"Column name '{column}' not found in the DataFrame.")
 
-    def handle_missing_data(self, drop: bool = False, 
+    def handle_missing_data(self, drop: bool = False,
                           fill_value: Union[None, float, int, str] = None) -> pd.DataFrame:
         """
         Handle missing data in the DataFrame.
@@ -309,8 +309,8 @@ class DataScrubber:
         Inspect the data by providing DataFrame information and summary statistics.
 
         Returns:
-            tuple: (info_str, describe_str), where `info_str` is a string representation 
-                   of DataFrame.info() and `describe_str` is a string representation of 
+            tuple: (info_str, describe_str), where `info_str` is a string representation
+                   of DataFrame.info() and `describe_str` is a string representation of
                    DataFrame.describe().
         """
         buffer = io.StringIO()
@@ -328,7 +328,7 @@ class DataScrubber:
             column (str): Name of the column to parse as datetime.
 
         Returns:
-            pd.DataFrame: Updated DataFrame with a new 'StandardDateTime' column 
+            pd.DataFrame: Updated DataFrame with a new 'StandardDateTime' column
                          containing parsed datetime values.
 
         Raises:
