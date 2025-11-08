@@ -219,4 +219,132 @@ Before starting a new session, remember to do a `git pull` and keep your tools u
 
 Each time forward progress is made, remember to git add-commit-push.
 
+---
+
+## WORKFLOW 4. Project 3 - Data Preparation with DataScrubber
+
+### 4.1 Overview
+
+Project 3 focuses on preparing data for Extract-Transform-Load (ETL) processes using a reusable `DataScrubber` class. This class provides standardized methods for common data cleaning tasks such as:
+
+- Removing duplicate records
+- Handling missing values
+- Standardizing column names and text data
+- Filtering outliers
+- Converting data types
+- Renaming and reordering columns
+- Parsing dates
+
+### 4.2 DataScrubber Class
+
+The `DataScrubber` class is located at `src/analytics_project/utils/data_scrubber.py` and provides a modular, reusable approach to data cleaning.
+
+**Key Methods:**
+- `remove_duplicate_records()` - Remove duplicate rows
+- `standardize_column_names()` - Standardize column names to lowercase
+- `replace_placeholders()` - Replace common placeholder values with NaN
+- `standardize_text_column()` - Standardize text to lower/upper/title case
+- `handle_missing_data()` - Drop or fill missing values
+- `check_data_consistency_before_cleaning()` - Check for nulls and duplicates
+- `check_data_consistency_after_cleaning()` - Verify data is clean
+- `convert_column_to_new_data_type()` - Convert column data types
+- `drop_columns()` - Remove specified columns
+- `filter_column_outliers()` - Filter outliers based on bounds
+- `rename_columns()` - Rename columns based on mapping
+- `reorder_columns()` - Reorder columns
+- `parse_dates_to_add_standard_datetime()` - Parse dates to datetime format
+- `inspect_data()` - Get DataFrame info and statistics
+
+### 4.3 Data Preparation Scripts
+
+Three specialized data preparation scripts use the DataScrubber class:
+
+1. **prepare_customers_data.py** - Cleans customer data
+   - Removes duplicates based on CustomerID
+   - Handles missing values (fills Region, LoyaltyPoints, PreferredContact)
+   - Standardizes Region and PreferredContact values
+   - Removes outliers in LoyaltyPoints (< 0 or > 10,000)
+   - Parses JoinDate to datetime format
+
+2. **prepare_products_data.py** - Cleans product data
+   - Removes duplicates based on ProductID
+   - Handles missing values (fills Supplier with 'Unknown')
+   - Standardizes Category and Supplier values
+   - Removes outliers in StockQuantity (< 0 or > 2,000)
+   - Validates UnitPrice is positive
+
+3. **prepare_sales_data.py** - Cleans sales data
+   - Removes duplicates based on TransactionID
+   - Handles missing values (fills CampaignID, DiscountPercent, PaymentType)
+   - Standardizes PaymentType values
+   - Removes outliers in DiscountPercent (< 0 or > 100)
+   - Validates SaleDate is after 2020
+   - Parses SaleDate to datetime format
+
+### 4.4 Running Data Preparation
+
+To clean and prepare all three data files, run these commands from the project root:
+
+```shell
+# Prepare customers data
+python -m src.analytics_project.data_preparation.prepare_customers_data
+
+# Prepare products data
+python -m src.analytics_project.data_preparation.prepare_products_data
+
+# Prepare sales data
+python -m src.analytics_project.data_preparation.prepare_sales_data
+```
+
+**Results:**
+- Cleaned data is saved to `data/prepared/` folder
+- Original data: `data/raw/customers_data.csv` (201 rows) → Cleaned: `customers_prepared.csv` (193 rows)
+- Original data: `data/raw/products_data.csv` (100 rows) → Cleaned: `products_prepared.csv` (98 rows)
+- Original data: `data/raw/sales_data.csv` (2001 rows) → Cleaned: `sales_prepared.csv` (1978 rows)
+
+### 4.5 Testing DataScrubber
+
+A comprehensive test suite verifies all DataScrubber methods work correctly.
+
+**Run tests:**
+
+```shell
+# Run all DataScrubber tests with unittest
+python -m unittest tests.test_data_scrubber -v
+
+# Run all tests with pytest (if available)
+uv run pytest tests/test_data_scrubber.py -v
+```
+
+**Test Results:**
+- ✅ All 29 tests pass successfully
+- Tests cover all DataScrubber methods
+- Tests verify error handling for invalid inputs
+- Tests confirm method chaining works properly
+
+### 4.6 Project 3 Summary
+
+**What Was Accomplished:**
+1. ✅ Enhanced DataScrubber class with all required methods
+2. ✅ Created comprehensive test suite (29 tests, all passing)
+3. ✅ Implemented data preparation scripts using DataScrubber
+4. ✅ Successfully cleaned all 3 data files (customers, products, sales)
+5. ✅ Generated prepared data files in `data/prepared/` folder
+6. ✅ Documented all processes and commands
+
+**Key Skills Learned:**
+- Creating reusable, object-oriented data cleaning classes
+- Using Python pandas for data manipulation
+- Writing unit tests with unittest
+- Implementing standardized data preparation pipelines
+- Handling missing values and outliers
+- Logging data processing steps
+
+**Files Created/Modified:**
+- `src/analytics_project/utils/data_scrubber.py` - Main DataScrubber class (enhanced)
+- `tests/test_data_scrubber.py` - Comprehensive test suite (new)
+- `data/prepared/customers_prepared.csv` - Cleaned customer data
+- `data/prepared/products_prepared.csv` - Cleaned product data
+- `data/prepared/sales_prepared.csv` - Cleaned sales data
+
 

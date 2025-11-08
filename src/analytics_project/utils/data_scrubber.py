@@ -2,9 +2,28 @@
 
 Provides reusable methods for removing duplicates, handling missing values,
 and standardizing data formats.
+
+This class provides methods for:
+- Checking data consistency
+- Removing duplicates
+- Handling missing values
+- Filtering outliers
+- Renaming and reordering columns
+- Formatting strings
+- Parsing date fields
+
+Use this class to perform similar cleaning operations across multiple files.
+
+Example:
+    from analytics_project.utils.data_scrubber import DataScrubber
+    
+    scrubber = DataScrubber(df)
+    df = scrubber.remove_duplicate_records().handle_missing_data(fill_value="N/A")
 """
 
+import io
 import pandas as pd
+from typing import Dict, Tuple, Union, List
 from loguru import logger
 
 
@@ -128,4 +147,245 @@ class DataScrubber:
 
         logger.info(f"Standardized text in column '{column}' to {case} case")
 
+        return self.df
+
+    def check_data_consistency_before_cleaning(self) -> Dict[str, Union[pd.Series, int]]:
+        """
+        Check data consistency before cleaning by calculating counts of null and duplicate entries.
+
+        Returns:
+            dict: Dictionary with counts of null values and duplicate rows.
+        """
+        null_counts = self.df.isnull().sum()
+        duplicate_count = self.df.duplicated().sum()
+        logger.info(f"Before cleaning - Null values: {null_counts.sum()}, Duplicates: {duplicate_count}")
+        return {'null_counts': null_counts, 'duplicate_count': duplicate_count}
+
+    def check_data_consistency_after_cleaning(self) -> Dict[str, Union[pd.Series, int]]:
+        """
+        Check data consistency after cleaning to ensure there are no null or duplicate entries.
+
+        Returns:
+            dict: Dictionary with counts of null values and duplicate rows,
+                  expected to be zero for each.
+        """
+        null_counts = self.df.isnull().sum()
+        duplicate_count = self.df.duplicated().sum()
+        assert null_counts.sum() == 0, "Data still contains null values after cleaning."
+        assert duplicate_count == 0, "Data still contains duplicate records after cleaning."
+        logger.info("After cleaning - Data is clean (no nulls or duplicates)")
+        return {'null_counts': null_counts, 'duplicate_count': duplicate_count}
+
+    def convert_column_to_new_data_type(self, column: str, new_type: type) -> pd.DataFrame:
+        """
+        Convert a specified column to a new data type.
+
+        Args:
+            column (str): Name of the column to convert.
+            new_type (type): The target data type (e.g., 'int', 'float', 'str').
+
+        Returns:
+            pd.DataFrame: Updated DataFrame with the column type converted.
+
+        Raises:
+            ValueError: If the specified column not found in the DataFrame.
+        """
+        try:
+            self.df[column] = self.df[column].astype(new_type)
+            logger.info(f"Converted column '{column}' to {new_type}")
+            return self.df
+        except KeyError:
+            raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+
+    def drop_columns(self, columns: List[str]) -> pd.DataFrame:
+        """
+        Drop specified columns from the DataFrame.
+
+        Args:
+            columns (list): List of column names to drop.
+
+        Returns:
+            pd.DataFrame: Updated DataFrame with specified columns removed.
+
+        Raises:
+            ValueError: If a specified column is not found in the DataFrame.
+        """
+        for column in columns:
+            if column not in self.df.columns:
+                raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+        self.df = self.df.drop(columns=columns)
+        logger.info(f"Dropped columns: {', '.join(columns)}")
+        return self.df
+
+    def filter_column_outliers(self, column: str, lower_bound: Union[float, int], 
+                              upper_bound: Union[float, int]) -> pd.DataFrame:
+        """
+        Filter outliers in a specified column based on lower and upper bounds.
+
+        Args:
+            column (str): Name of the column to filter for outliers.
+            lower_bound (float or int): Lower threshold for outlier filtering.
+            upper_bound (float or int): Upper threshold for outlier filtering.
+
+        Returns:
+            pd.DataFrame: Updated DataFrame with outliers filtered out.
+
+        Raises:
+            ValueError: If the specified column not found in the DataFrame.
+        """
+        try:
+            initial_count = len(self.df)
+            self.df = self.df[(self.df[column] >= lower_bound) & (self.df[column] <= upper_bound)]
+            removed_count = initial_count - len(self.df)
+            logger.info(f"Filtered {removed_count} outliers from column '{column}'")
+            return self.df
+        except KeyError:
+            raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+
+    def format_column_strings_to_lower_and_trim(self, column: str) -> pd.DataFrame:
+        """
+        Format strings in a specified column by converting to lowercase and trimming whitespace.
+
+        Args:
+            column (str): Name of the column to format.
+
+        Returns:
+            pd.DataFrame: Updated DataFrame with formatted string column.
+
+        Raises:
+            ValueError: If the specified column not found in the DataFrame.
+        """
+        try:
+            self.df[column] = self.df[column].str.lower().str.strip()
+            logger.info(f"Formatted column '{column}' to lowercase and trimmed")
+            return self.df
+        except KeyError:
+            raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+
+    def format_column_strings_to_upper_and_trim(self, column: str) -> pd.DataFrame:
+        """
+        Format strings in a specified column by converting to uppercase and trimming whitespace.
+
+        Args:
+            column (str): Name of the column to format.
+
+        Returns:
+            pd.DataFrame: Updated DataFrame with formatted string column.
+
+        Raises:
+            ValueError: If the specified column not found in the DataFrame.
+        """
+        try:
+            self.df[column] = self.df[column].str.upper().str.strip()
+            logger.info(f"Formatted column '{column}' to uppercase and trimmed")
+            return self.df
+        except KeyError:
+            raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+
+    def handle_missing_data(self, drop: bool = False, 
+                          fill_value: Union[None, float, int, str] = None) -> pd.DataFrame:
+        """
+        Handle missing data in the DataFrame.
+
+        Args:
+            drop (bool, optional): If True, drop rows with missing values. Default is False.
+            fill_value (any, optional): Value to fill in for missing entries if drop is False.
+
+        Returns:
+            pd.DataFrame: Updated DataFrame with missing data handled.
+        """
+        if drop:
+            initial_count = len(self.df)
+            self.df = self.df.dropna()
+            removed_count = initial_count - len(self.df)
+            logger.info(f"Dropped {removed_count} rows with missing values")
+        elif fill_value is not None:
+            self.df = self.df.fillna(fill_value)
+            logger.info(f"Filled missing values with: {fill_value}")
+        return self.df
+
+    def inspect_data(self) -> Tuple[str, str]:
+        """
+        Inspect the data by providing DataFrame information and summary statistics.
+
+        Returns:
+            tuple: (info_str, describe_str), where `info_str` is a string representation 
+                   of DataFrame.info() and `describe_str` is a string representation of 
+                   DataFrame.describe().
+        """
+        buffer = io.StringIO()
+        self.df.info(buf=buffer)
+        info_str = buffer.getvalue()
+        describe_str = self.df.describe().to_string()
+        logger.info("Data inspection completed")
+        return info_str, describe_str
+
+    def parse_dates_to_add_standard_datetime(self, column: str) -> pd.DataFrame:
+        """
+        Parse a specified column as datetime format and add it as a new column named 'StandardDateTime'.
+
+        Args:
+            column (str): Name of the column to parse as datetime.
+
+        Returns:
+            pd.DataFrame: Updated DataFrame with a new 'StandardDateTime' column 
+                         containing parsed datetime values.
+
+        Raises:
+            ValueError: If the specified column not found in the DataFrame.
+        """
+        try:
+            self.df['StandardDateTime'] = pd.to_datetime(self.df[column])
+            logger.info(f"Parsed column '{column}' to StandardDateTime")
+            return self.df
+        except KeyError:
+            raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+
+    def rename_columns(self, column_mapping: Dict[str, str]) -> pd.DataFrame:
+        """
+        Rename columns in the DataFrame based on a provided mapping.
+
+        Args:
+            column_mapping (dict): Dictionary where keys are old column names and values are new names.
+
+        Returns:
+            pd.DataFrame: Updated DataFrame with renamed columns.
+
+        Raises:
+            ValueError: If a specified column is not found in the DataFrame.
+        """
+        for old_name, new_name in column_mapping.items():
+            if old_name not in self.df.columns:
+                raise ValueError(f"Column '{old_name}' not found in the DataFrame.")
+        self.df = self.df.rename(columns=column_mapping)
+        logger.info(f"Renamed columns: {column_mapping}")
+        return self.df
+
+    def reorder_columns(self, columns: List[str]) -> pd.DataFrame:
+        """
+        Reorder columns in the DataFrame based on the specified order.
+
+        Args:
+            columns (list): List of column names in the desired order.
+
+        Returns:
+            pd.DataFrame: Updated DataFrame with reordered columns.
+
+        Raises:
+            ValueError: If a specified column is not found in the DataFrame.
+        """
+        for column in columns:
+            if column not in self.df.columns:
+                raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+        self.df = self.df[columns]
+        logger.info(f"Reordered columns to: {', '.join(columns)}")
+        return self.df
+
+    def get_dataframe(self) -> pd.DataFrame:
+        """
+        Get the current state of the DataFrame.
+
+        Returns:
+            pd.DataFrame: The cleaned DataFrame.
+        """
         return self.df
