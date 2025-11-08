@@ -195,7 +195,7 @@ class DataScrubber:
             logger.info(f"Converted column '{column}' to {new_type}")
             return self.df
         except KeyError:
-            raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+            raise ValueError(f"Column name '{column}' not found in the DataFrame.") from None
 
     def drop_columns(self, columns: List[str]) -> pd.DataFrame:
         """
@@ -240,7 +240,7 @@ class DataScrubber:
             logger.info(f"Filtered {removed_count} outliers from column '{column}'")
             return self.df
         except KeyError:
-            raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+            raise ValueError(f"Column name '{column}' not found in the DataFrame.") from None
 
     def format_column_strings_to_lower_and_trim(self, column: str) -> pd.DataFrame:
         """
@@ -260,7 +260,7 @@ class DataScrubber:
             logger.info(f"Formatted column '{column}' to lowercase and trimmed")
             return self.df
         except KeyError:
-            raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+            raise ValueError(f"Column name '{column}' not found in the DataFrame.") from None
 
     def format_column_strings_to_upper_and_trim(self, column: str) -> pd.DataFrame:
         """
@@ -280,7 +280,7 @@ class DataScrubber:
             logger.info(f"Formatted column '{column}' to uppercase and trimmed")
             return self.df
         except KeyError:
-            raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+            raise ValueError(f"Column name '{column}' not found in the DataFrame.") from None
 
     def handle_missing_data(self, drop: bool = False,
                           fill_value: Union[None, float, int, str] = None) -> pd.DataFrame:
@@ -339,7 +339,7 @@ class DataScrubber:
             logger.info(f"Parsed column '{column}' to StandardDateTime")
             return self.df
         except KeyError:
-            raise ValueError(f"Column name '{column}' not found in the DataFrame.")
+            raise ValueError(f"Column name '{column}' not found in the DataFrame.") from None
 
     def rename_columns(self, column_mapping: Dict[str, str]) -> pd.DataFrame:
         """
@@ -354,7 +354,7 @@ class DataScrubber:
         Raises:
             ValueError: If a specified column is not found in the DataFrame.
         """
-        for old_name, new_name in column_mapping.items():
+        for old_name in column_mapping:
             if old_name not in self.df.columns:
                 raise ValueError(f"Column '{old_name}' not found in the DataFrame.")
         self.df = self.df.rename(columns=column_mapping)
