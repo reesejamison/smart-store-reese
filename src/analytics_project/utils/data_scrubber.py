@@ -80,7 +80,11 @@ class DataScrubber:
         original_columns = self.df.columns.tolist()
         self.df.columns = self.df.columns.str.strip().str.lower()
 
-        changed = [f"{old} -> {new}" for old, new in zip(original_columns, self.df.columns, strict=True) if old != new]
+        changed = [
+            f"{old} -> {new}"
+            for old, new in zip(original_columns, self.df.columns, strict=True)
+            if old != new
+        ]
         if changed:
             logger.info(f"Standardized column names: {', '.join(changed)}")
 
@@ -111,7 +115,7 @@ class DataScrubber:
                 ' ': pd.NA,
                 'unknown': pd.NA,
                 'Unknown': pd.NA,
-                'UNKNOWN': pd.NA
+                'UNKNOWN': pd.NA,
             }
 
         self.df.replace(replacements, inplace=True)
@@ -158,7 +162,9 @@ class DataScrubber:
         """
         null_counts = self.df.isnull().sum()
         duplicate_count = self.df.duplicated().sum()
-        logger.info(f"Before cleaning - Null values: {null_counts.sum()}, Duplicates: {duplicate_count}")
+        logger.info(
+            f"Before cleaning - Null values: {null_counts.sum()}, Duplicates: {duplicate_count}"
+        )
         return {'null_counts': null_counts, 'duplicate_count': duplicate_count}
 
     def check_data_consistency_after_cleaning(self) -> Dict[str, Union[pd.Series, int]]:
@@ -217,8 +223,9 @@ class DataScrubber:
         logger.info(f"Dropped columns: {', '.join(columns)}")
         return self.df
 
-    def filter_column_outliers(self, column: str, lower_bound: Union[float, int],
-                              upper_bound: Union[float, int]) -> pd.DataFrame:
+    def filter_column_outliers(
+        self, column: str, lower_bound: Union[float, int], upper_bound: Union[float, int]
+    ) -> pd.DataFrame:
         """
         Filter outliers in a specified column based on lower and upper bounds.
 
@@ -282,8 +289,9 @@ class DataScrubber:
         except KeyError:
             raise ValueError(f"Column name '{column}' not found in the DataFrame.") from None
 
-    def handle_missing_data(self, drop: bool = False,
-                          fill_value: Union[None, float, int, str] = None) -> pd.DataFrame:
+    def handle_missing_data(
+        self, drop: bool = False, fill_value: Union[None, float, int, str] = None
+    ) -> pd.DataFrame:
         """
         Handle missing data in the DataFrame.
 

@@ -53,6 +53,7 @@ PREPARED_DATA_DIR.mkdir(exist_ok=True)
 # Define Functions - Reusable blocks of code / instructions
 #####################################
 
+
 def read_raw_data(file_name: str) -> pd.DataFrame:
     """Read raw data from CSV."""
     file_path: pathlib.Path = RAW_DATA_DIR.joinpath(file_name)
@@ -75,7 +76,9 @@ def save_prepared_data(df: pd.DataFrame, file_name: str) -> None:
         df (pd.DataFrame): Cleaned DataFrame.
         file_name (str): Name of the output file.
     """
-    logger.info(f"FUNCTION START: save_prepared_data with file_name={file_name}, dataframe shape={df.shape}")
+    logger.info(
+        f"FUNCTION START: save_prepared_data with file_name={file_name}, dataframe shape={df.shape}"
+    )
     file_path = PREPARED_DATA_DIR.joinpath(file_name)
     df.to_csv(file_path, index=False)
     logger.info(f"Data saved to {file_path}")
@@ -143,18 +146,21 @@ def handle_missing_values(df: pd.DataFrame) -> pd.DataFrame:
 
     # Drop rows missing critical fields
     initial_count = len(df)
-    critical_fields = ['TransactionID', 'SaleDate', 'CustomerID', 'ProductID', 'StoreID', 'SaleAmount']
+    critical_fields = [
+        'TransactionID',
+        'SaleDate',
+        'CustomerID',
+        'ProductID',
+        'StoreID',
+        'SaleAmount',
+    ]
     df.dropna(subset=critical_fields, inplace=True)
     dropped = initial_count - len(df)
     if dropped > 0:
         logger.info(f"Dropped {dropped} rows with missing critical fields")
 
     # Fill non-critical missing values
-    df = df.fillna({
-        'CampaignID': 0,
-        'DiscountPercent': 0,
-        'PaymentType': 'Unknown'
-    })
+    df = df.fillna({'CampaignID': 0, 'DiscountPercent': 0, 'PaymentType': 'Unknown'})
 
     # Log missing values count after handling
     missing_after = df.isna().sum()
@@ -197,7 +203,7 @@ def standardize_data(df: pd.DataFrame) -> pd.DataFrame:
         'paypal': 'PayPal',
         'PAYPAL': 'PayPal',
         'gift card': 'Gift Card',
-        'GIFT CARD': 'Gift Card'
+        'GIFT CARD': 'Gift Card',
     }
     df['PaymentType'] = df['PaymentType'].str.strip().replace(payment_mapping)
     logger.info(f"Standardized PaymentType values: {df['PaymentType'].unique()}")
@@ -290,6 +296,7 @@ def remove_outliers(df: pd.DataFrame) -> pd.DataFrame:
 # Define Main Function - The main entry point of the script
 #####################################
 
+
 def main() -> None:
     """Process sales data for ETL preparation."""
     logger.info("=" * 50)
@@ -322,7 +329,11 @@ def main() -> None:
     df.columns = df.columns.str.strip()
 
     # Log if any column names changed
-    changed_columns = [f"{old} -> {new}" for old, new in zip(original_columns, df.columns, strict=True) if old != new]
+    changed_columns = [
+        f"{old} -> {new}"
+        for old, new in zip(original_columns, df.columns, strict=True)
+        if old != new
+    ]
     if changed_columns:
         logger.info(f"Cleaned column names: {', '.join(changed_columns)}")
 
@@ -348,6 +359,7 @@ def main() -> None:
     logger.info("=" * 50)
     logger.info("FINISHED prepare_sales_data.py")
     logger.info("=" * 50)
+
 
 #####################################
 # Conditional Execution Block
