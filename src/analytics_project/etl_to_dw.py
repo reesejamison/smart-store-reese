@@ -248,7 +248,6 @@ def verify_warehouse(cursor: sqlite3.Cursor) -> None:
 
     tables = ["customers", "products", "stores", "campaigns", "sales"]
     for table in tables:
-        cursor.execute(f"SELECT COUNT(*) as count FROM {table}")
         count = cursor.fetchone()[0]
         print(f"[OK] {table.capitalize():10s}: {count:6d} records")
 
@@ -294,7 +293,7 @@ def verify_warehouse(cursor: sqlite3.Cursor) -> None:
 
 
 def load_data_to_db() -> None:
-    """Main ETL function: Create schema and load all data into warehouse."""
+    """Create schema and load all data into warehouse."""
     conn: sqlite3.Connection | None = None
 
     try:

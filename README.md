@@ -593,7 +593,62 @@ GROUP BY st.store_id, ca.campaign_id;
 - Add data validation tests and quality metrics
 - Export dashboard-ready views for BI tools
 
----
+# 📊 Project 5 — Reporting with Power BI
+
+## Overview
+For Project 5, I connected the `smart_sales.db` data warehouse to **Power BI Desktop (Windows)** using the **SQLite ODBC driver (SmartSalesDSN)**. I created three OLAP visuals: **slice, dice, and drilldown**.
+
+## 🔹 Slicing (Time Filter)
+**What I did:**
+Applied a **Year = 2025** filter on the `created_at` date field.
+
+**Why:**
+This isolates one time period and shows a clear example of OLAP slicing—restricting the cube to a single dimension value.
+
+**Screenshot:**
+*(Insert slice screenshot here)*
+
+## 🔹 Dicing (Multi-Dimensional Filter)
+**What I did:**
+Created a **Matrix** visual:
+
+- Rows: `category`
+- Columns: `region`
+- Values: Sum of `net_sale_amount`
+
+Applied filters: **Year = 2025** and **category = Electronics**.
+
+**Why:**
+Combining multiple dimensions (category + region + year) demonstrates OLAP dicing by creating a smaller multi-dimensional sub-cube.
+
+**Screenshot:**
+*(Insert dicing screenshot here)*
+
+## 🔹 Drilldown (Date Hierarchy)
+**What I did:**
+Built a line chart using Power BI’s **Date Hierarchy**:
+
+- Year → Quarter → Month → Day
+
+Enabled drilldown buttons and drilled from Year to Day.
+
+**Why:**
+Date drilldowns show how users can explore data from summary level to detail. Even with limited rows, the hierarchy still demonstrates drilldown behavior.
+
+**Screenshot:**
+*(Insert drilldown screenshot here)*
+
+## Challenges & Solutions
+- **Hierarchy not showing correctly** → Switched X-axis to **Categorical**
+- **ODBC asked for username/password** → Entered a placeholder (SQLite doesn’t require auth)
+- **Only one data point in drilldown** → Caused by slicing/dicing; still valid for hierarchy demonstration
+
+## Summary
+- Connected Power BI to SQLite using ODBC
+- Implemented slice, dice, and drilldown visuals
+- Demonstrated OLAP operations with clear screenshots
+- Documented process and filtered results
+
 
 
 
