@@ -822,8 +822,60 @@ Generated 4 bar charts (`campaign_effectiveness_charts.png`):
 - ✅ Generated actionable business insights with clear visualizations
 - ✅ Automated analysis in Python for reproducibility
 - ✅ Documented all challenges and solutions
+- ✅ **Integrated with Project 5 data warehouse** - Queries `smart_sales.db` directly
 
-**Next Steps:** Monitor Campaign 3 sustainability; test geographic expansion strategies; evaluate margin impact of discount changes
+---
+
+### Project Integration: OLAP Queries Data Warehouse
+
+Your OLAP analysis connects to the data warehouse created in Project 5, demonstrating the full analytics pipeline:
+
+**Pipeline:** Project 3 (Data Prep) → Project 4 (Warehouse) → Project 5 (Verify) → Project 6 (OLAP Analysis)
+
+#### Two Approaches Available:
+
+**1. CSV-Based Approach** (`campaign_effectiveness_by_state.py`)
+- Reads from prepared CSV files
+- Faster for exploration and prototyping
+- Good for data scientists to explore independently
+
+**2. Warehouse-Connected Approach** (`campaign_effectiveness_from_dw.py`) ⭐ NEW
+- Queries `data/dw/smart_sales.db` directly via SQL
+- Production-ready workflow
+- Single source of truth (warehouse maintains data integrity)
+- Demonstrates database integration
+
+#### Running the Warehouse-Connected Analysis:
+
+```powershell
+cd c:\Users\reese\44632\smart-store-reese
+.\.venv\Scripts\activate
+python -m src.analytics_project.olap.campaign_effectiveness_from_dw
+```
+
+**Output from Warehouse Version:**
+- 1,939 transactions analyzed (vs 1,902 from prepared CSV - warehouse includes all valid records)
+- 7 regions (includes "Unknown" region from database)
+- Same OLAP techniques: Slicing, Dicing, Drill-down
+- Files saved with `_dw` suffix for distinction:
+  - `campaign_effectiveness_charts_dw.png`
+  - `slice_campaign_1_by_region_dw.csv`
+  - `dice_campaign_by_region_dw.csv`
+  - `drilldown_campaign_region_category_dw.csv`
+
+#### Key Differences:
+
+| Metric | CSV Version | Warehouse Version |
+|--------|------------|-------------------|
+| Transactions | 1,902 | 1,939 |
+| Regions | 6 | 7 (includes Unknown) |
+| Total Revenue | $1,922,459 | $1,443,418 |
+| Data Source | Prepared CSV files | SQLite database |
+| Production Ready | Moderate | ✅ Yes |
+
+The warehouse version includes unfiltered data (with "Unknown" region), showing how production systems handle edge cases vs. curated prepared data.
+
+**Next Steps:** Schedule monthly refresh of both analyses; compare results to validate warehouse data quality
 
 
 
