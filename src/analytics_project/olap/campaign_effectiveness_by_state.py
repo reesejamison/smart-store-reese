@@ -1,13 +1,13 @@
 """
-OLAP Analysis: Campaign Effectiveness by State/Region
+OLAP Analysis: Campaign Effectiveness by State/Region.
 
 Business Goal:
-Identify which campaigns are most effective by region to optimize marketing spend.
+    Identify which campaigns are most effective by region to optimize marketing spend.
 
 Techniques:
-- Slicing: Filter by specific campaign
-- Dicing: Campaign × Region cross-tabulation
-- Drill-down: Campaign → Region → Transaction details
+    - Slicing: Filter by specific campaign
+    - Dicing: Campaign × Region cross-tabulation
+    - Drill-down: Campaign → Region → Transaction details
 """
 
 import pandas as pd
@@ -38,13 +38,12 @@ def load_data():
     sales_df["SaleDate"] = pd.to_datetime(sales_df["SaleDate"])
 
     # Drop rows with missing Region (data quality)
-    sales_df = sales_df.dropna(subset=["Region"])
-
-    return sales_df
+    return sales_df.dropna(subset=["Region"])
 
 
 def slice_analysis(sales_df):
-    """
+    """Filter data by single dimension.
+
     SLICING: Filter by single dimension (e.g., Campaign 1)
     Shows campaign 1 performance across all regions.
     """
@@ -71,7 +70,8 @@ def slice_analysis(sales_df):
 
 
 def dice_analysis(sales_df):
-    """
+    """Break down data by multiple dimensions.
+
     DICING: Multi-dimensional breakdown (Campaign × Region)
     Shows campaign effectiveness across multiple dimensions simultaneously.
     """
@@ -102,7 +102,8 @@ def dice_analysis(sales_df):
 
 
 def drilldown_analysis(sales_df):
-    """
+    """Explore data through hierarchical levels.
+
     DRILL-DOWN: Progressive detail (Campaign → Region → Product Category)
     Shows hierarchical exploration from aggregate to detail.
     """
