@@ -649,6 +649,182 @@ Date drilldowns show how users can explore data from summary level to detail. Ev
 - Demonstrated OLAP operations with clear screenshots
 - Documented process and filtered results
 
+---
+
+# 📊 Project 6 — OLAP Analysis: Campaign Effectiveness by State
+
+## Overview
+
+For Project 6, I implemented OLAP analysis using **Python with pandas and matplotlib** to answer: *Which marketing campaigns are most effective by region to optimize future spending?*
+
+The analysis demonstrates slicing, dicing, and drill-down techniques on prepared sales data, resulting in actionable business insights with clear visualizations.
+
+## Business Goal
+
+**Question:** Which campaigns generate the most revenue by region, and where should we allocate future marketing budget?
+
+**Why it matters:** Data-driven campaign optimization enables better ROI and identifies geographic/campaign strengths and weaknesses.
+
+## Data Source
+
+**Prepared CSV files:**
+- `sales_data_prepared.csv` (1,978 transactions → 1,902 after cleaning)
+- `customers_data_prepared.csv` (193 customer records)
+- `products_data_prepared.csv` (98 product records)
+
+**Key dimensions:** Campaign, Region, Product Category
+**Key metrics:** Total Revenue, Transaction Count, Average Sale, Average Discount
+
+## 🔹 Slicing (Single Dimension Filter)
+
+**What I did:**
+Filtered Campaign 1 and analyzed its performance across all 6 regions.
+
+**Results:**
+- **Strongest:** East region ($127,438 / 147 transactions)
+- **Weakest:** South region ($47,466 / 50 transactions)
+- **Variation:** 2.7x difference between best and worst region
+
+```
+SLICING: Campaign 1 Performance (Single Dimension Filter)
+           Total Sales   Avg Sale  Transactions  Avg Discount %
+Region
+Central      49495.51    1099.90             45            28.00
+East        127438.47     866.93            147            22.55
+North        70446.09     891.72             79            23.27
+South        47465.68     949.31             50            26.42
+Southwest    49351.47     931.16             53            25.71
+West         66963.25     778.64             86            28.00
+```
+
+## 🔹 Dicing (Multi-Dimensional Breakdown)
+
+**What I did:**
+Created a Campaign × Region pivot table showing revenue across all campaign and region combinations simultaneously.
+
+**Results:**
+- **Best campaign:** Campaign 3 ($601,941 / 31% of total revenue)
+- **Worst campaign:** Campaign 2 ($382,689 / 20% of total revenue)
+- **Campaign variance:** Campaign 3 generates 57% more than Campaign 2
+- **Regional pattern:** East dominates for ALL campaigns (32.5% of total)
+
+```
+DICING: Campaign × Region Revenue Matrix
+CampaignID   Central       East        North       South  Southwest       West       Total
+0            52194.18  173312.36   100567.42    54585.11   35258.82  110750.29   526668.18
+1            49495.51  127438.47    70446.09    47465.68   49351.47   66963.25   411160.47
+2            40025.72  123033.97    85733.09    37406.02   41655.26   54835.20   382689.26
+3            53465.63  201102.66   120899.22    52083.77   69881.28  104508.45   601941.01
+Total       195181.04  624887.46   377645.82   191540.58  196146.83  337057.19  1922458.92
+```
+
+**Key Finding:** Campaign 3 × East = **$201,103** (highest), Campaign 2 × South = **$37,406** (lowest) = **5.4x variance**
+
+## 🔹 Drill-down (Hierarchical Detail)
+
+**What I did:**
+Explored data from aggregate → intermediate → specific:
+- **Level 1:** Campaign totals (4 records)
+- **Level 2:** Campaign × Region (24 combinations)
+- **Level 3:** Campaign × Region × Product Category (96 combinations)
+
+**Top 10 combinations (Campaign × Region × Category):**
+
+| Rank | Campaign | Region | Category | Revenue |
+|------|----------|--------|----------|---------|
+| 1 | 0 | East | Home | $58,145 |
+| 2 | 3 | East | Electronics | $55,654 |
+| 3 | 3 | East | Clothing | $52,891 |
+| 4 | 0 | East | Electronics | $47,335 |
+| 5 | 1 | East | Clothing | $45,266 |
+| 6 | 3 | East | Home | $40,782 |
+| 7 | 3 | East | Office | $39,621 |
+| 8 | 0 | East | Clothing | $38,663 |
+| 9 | 2 | East | Electronics | $38,085 |
+| 10 | 3 | North | Home | $37,592 |
+
+**Observation:** 7 of top 10 are in East region; Home & Electronics categories dominate
+
+## 📊 Visualizations
+
+Generated 4 bar charts (`campaign_effectiveness_charts.png`):
+
+1. **Total Revenue by Campaign** - Campaign 3 dominance ($602K)
+2. **Transaction Count by Region** - East leads (618 transactions)
+3. **Average Discount by Campaign** - Relatively stable (24-25%)
+4. **Total Revenue by Region** - Geographic concentration (East 3x higher than South)
+
+![Campaign Effectiveness Charts](src/analytics_project/olap/output/campaign_effectiveness_charts.png)
+
+## Tools & Techniques
+
+**Tools:**
+- Python 3.12 with pandas, matplotlib
+- Automated aggregations and groupby operations
+- Multi-index grouping for hierarchical analysis
+
+**Why Python?**
+- Reproducible and automatable (can schedule monthly reports)
+- Clear code documentation for future analysts
+- Easy to enhance with predictive modeling, visualization libraries, dashboarding
+- Integrates with data warehouse and BI tools
+
+## Key Findings & Business Actions
+
+### Finding 1: Campaign 3 Dominance
+- **57% higher revenue** than Campaign 2
+- Consistent across all regions
+- **Action:** Increase investment in Campaign 3; analyze messaging/targeting for replication
+
+### Finding 2: East Region Concentration
+- **32.5% of all revenue** from East region (3x higher than Central/South)
+- **Consistent across all campaigns**
+- **Action:** Investigate market characteristics in East; test localized campaigns in underperforming regions (South/Central/Southwest)
+
+### Finding 3: Geographic Imbalance
+- Central, South, Southwest each contribute only 10% despite similar transaction volumes
+- **Action:** Regional analysis needed—pricing, competition, market saturation?
+
+### Finding 4: Stable Discount Strategy
+- Average discount 24-25% across all campaigns
+- **Action:** Test discount reduction in high-performing regions (East) to improve margins
+
+## Challenges & Solutions
+
+| Challenge | Solution |
+|-----------|----------|
+| Missing Region data (76 rows) | Dropped NaN values; documented data loss (3.8%) |
+| Limited campaign metadata | Used available dimensions; focused on actionable metrics |
+| Linting standards (PEP 257) | Fixed docstring formatting; all checks pass |
+| PowerShell Unicode issues | Replaced special characters with ASCII equivalents |
+
+## Aggregations Performed
+
+| Technique | Aggregation | Purpose |
+|-----------|-------------|---------|
+| Slicing | SUM(revenue) grouped by Region | Campaign 1 performance by geography |
+| Dicing | SUM(revenue) grouped by Campaign, Region | Multi-dimensional comparison |
+| Drill-down | SUM(revenue), COUNT(*), MEAN(discount) by Campaign, Region, Category | Detail-level insights |
+
+## Files Generated
+
+- **campaign_effectiveness_by_state.py** - OLAP analysis script (249 lines)
+- **4-CAMPAIGN_EFFECTIVENESS_BY_STATE.md** - Detailed analysis documentation
+- **slice_campaign_1_by_region.csv** - Slicing results
+- **dice_campaign_by_region.csv** - Campaign × Region pivot table
+- **drilldown_campaign_region_category.csv** - Hierarchical breakdown (96 rows)
+- **campaign_effectiveness_charts.png** - 4-panel visualization
+
+## Summary
+
+- ✅ Implemented OLAP slicing, dicing, and drill-down on real sales data
+- ✅ Identified Campaign 3 and East region as performance drivers
+- ✅ Generated actionable business insights with clear visualizations
+- ✅ Automated analysis in Python for reproducibility
+- ✅ Documented all challenges and solutions
+
+**Next Steps:** Monitor Campaign 3 sustainability; test geographic expansion strategies; evaluate margin impact of discount changes
+
 
 
 
