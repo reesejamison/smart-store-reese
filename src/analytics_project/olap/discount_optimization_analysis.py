@@ -79,7 +79,7 @@ def slice_analysis(df):
     }).round(2)
     print("\nSlice 1: Electronics by Discount Tier")
     print(electronics_summary)
-    electronics_summary.to_csv(os.path.join(OUTPUT_DIR, 'slice_electronics_discount.csv'))
+    electronics_summary.to_csv(OUTPUT_DIR / "slice_electronics_discount.csv")
 
     # Slice 2: Store 401 only
     store_401 = df[df['StoreID'] == 401].copy()
@@ -91,7 +91,7 @@ def slice_analysis(df):
     }).round(2)
     print("\nSlice 2: Store 401 by Category")
     print(store_summary)
-    store_summary.to_csv(os.path.join(OUTPUT_DIR, 'slice_store401_category.csv'))
+    store_summary.to_csv(OUTPUT_DIR / "slice_store401_category.csv")
 
     # Slice 3: High discounts (30%+)
     high_discount = df[df['DiscountPercent'] >= 30].copy()
@@ -102,7 +102,7 @@ def slice_analysis(df):
     }).round(2)
     print("\nSlice 3: High Discount (30%+) by Category")
     print(high_discount_summary)
-    high_discount_summary.to_csv(os.path.join(OUTPUT_DIR, 'slice_high_discount.csv'))
+    high_discount_summary.to_csv(OUTPUT_DIR / "slice_high_discount.csv")
 
 def dice_analysis(df):
     """OLAP Dicing: Multi-dimensional filtering."""
@@ -120,7 +120,7 @@ def dice_analysis(df):
             'DiscountPercent': 'mean'
         }).round(2).head(10)
         print(dice1_summary)
-        dice1_summary.to_csv(os.path.join(OUTPUT_DIR, 'dice_electronics_clearance.csv'))
+        dice1_summary.to_csv(OUTPUT_DIR / "dice_electronics_clearance.csv")
 
     # Dice 2: Clothing + Store 402 + Q4
     dice2 = df[(df['Category'] == 'Clothing') &
@@ -144,9 +144,9 @@ def dice_analysis(df):
         'TransactionID': 'count',
         'GrossMargin': 'mean'
     }).round(2).sort_values('SaleAmount', ascending=False)
-    print(f"\nDice 3: Office + Low Discount by Store")
+    print("\nDice 3: Office + Low Discount by Store")
     print(dice3_summary)
-    dice3_summary.to_csv(os.path.join(OUTPUT_DIR, 'dice_office_low_discount.csv'))
+    dice3_summary.to_csv(OUTPUT_DIR / "dice_office_low_discount.csv")
 
 def drilldown_analysis(df):
     """OLAP Drilldown: Progressive detail levels."""
@@ -160,7 +160,7 @@ def drilldown_analysis(df):
     }).round(2).sort_values('SaleAmount', ascending=False)
     print("\nLevel 1: Revenue by Category")
     print(level1)
-    level1.to_csv(os.path.join(OUTPUT_DIR, 'drilldown_level1_category.csv'))
+    level1.to_csv(OUTPUT_DIR / "drilldown_level1_category.csv")
 
     # Level 2: Drill into top category by store
     top_category = level1.index[0]
@@ -172,7 +172,7 @@ def drilldown_analysis(df):
     }).round(2).sort_values('SaleAmount', ascending=False)
     print(f"\nLevel 2: {top_category} by Store")
     print(level2)
-    level2.to_csv(os.path.join(OUTPUT_DIR, 'drilldown_level2_store.csv'))
+    level2.to_csv(OUTPUT_DIR / "drilldown_level2_store.csv")
 
     # Level 3: Drill into best store by discount tier
     top_store = level2.index[0]
@@ -185,7 +185,7 @@ def drilldown_analysis(df):
     }).round(2)
     print(f"\nLevel 3: {top_category} at Store {top_store} by Discount Tier")
     print(level3)
-    level3.to_csv(os.path.join(OUTPUT_DIR, 'drilldown_level3_discount.csv'))
+    level3.to_csv(OUTPUT_DIR / "drilldown_level3_discount.csv")
 
     # Level 4: Top products in best discount tier
     best_tier = level3['SaleAmount'].idxmax()
@@ -198,7 +198,7 @@ def drilldown_analysis(df):
     }).round(2).sort_values('SaleAmount', ascending=False).head(10)
     print(f"\nLevel 4: Top Products in {best_tier} tier")
     print(level4)
-    level4.to_csv(os.path.join(OUTPUT_DIR, 'drilldown_level4_products.csv'))
+    level4.to_csv(OUTPUT_DIR / "drilldown_level4_products.csv")
 
 def create_visualizations(df):
     """Create key visualizations for the analysis."""
@@ -216,9 +216,9 @@ def create_visualizations(df):
 
     # Add value labels on bars
     for i, v in enumerate(category_discount.values):
-        ax.text(i, v + 0.5, f'{v:.1f}%', ha='center', va='bottom')
+        ax.text(i, v + 0.5, f"{v:.1f}%", ha="center", va="bottom")
 
-    plt.savefig(os.path.join(VIZ_DIR, '1_bar_discount_by_category.png'), dpi=300, bbox_inches='tight')
+    plt.savefig(VIZ_DIR / "1_bar_discount_by_category.png", dpi=300, bbox_inches="tight")
     print("✓ Saved: 1_bar_discount_by_category.png")
     plt.close()
 
@@ -231,10 +231,10 @@ def create_visualizations(df):
                                      fill_value=0)
     sns.heatmap(pivot_revenue, annot=True, fmt='.0f', cmap='YlOrRd', cbar_kws={'label': 'Net Revenue ($)'})
     plt.title('Net Revenue Heatmap: Store × Category', fontsize=14, fontweight='bold')
-    plt.xlabel('Product Category', fontsize=12)
-    plt.ylabel('Store ID', fontsize=12)
+    plt.xlabel("Product Category", fontsize=12)
+    plt.ylabel("Store ID", fontsize=12)
     plt.tight_layout()
-    plt.savefig(os.path.join(VIZ_DIR, '2_heatmap_store_category.png'), dpi=300, bbox_inches='tight')
+    plt.savefig(VIZ_DIR / "2_heatmap_store_category.png", dpi=300, bbox_inches="tight")
     print("✓ Saved: 2_heatmap_store_category.png")
     plt.close()
 
@@ -252,17 +252,17 @@ def create_visualizations(df):
                 s=200, alpha=0.6, c=['green', 'blue', 'orange', 'red'])
 
     # Add labels
-    for idx, row in discount_analysis.iterrows():
-        plt.annotate(row['DiscountTier'],
-                    (row['DiscountPercent'], row['TransactionID']),
-                    xytext=(5, 5), textcoords='offset points')
+    for _idx, row in discount_analysis.iterrows():
+        plt.annotate(row["DiscountTier"],
+                    (row["DiscountPercent"], row["TransactionID"]),
+                    xytext=(5, 5), textcoords="offset points")
 
     plt.title('Discount Efficiency: Discount % vs Sales Volume', fontsize=14, fontweight='bold')
     plt.xlabel('Average Discount Percentage (%)', fontsize=12)
-    plt.ylabel('Number of Transactions', fontsize=12)
+    plt.ylabel("Number of Transactions", fontsize=12)
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(os.path.join(VIZ_DIR, '3_scatter_discount_efficiency.png'), dpi=300, bbox_inches='tight')
+    plt.savefig(VIZ_DIR / "3_scatter_discount_efficiency.png", dpi=300, bbox_inches="tight")
     print("✓ Saved: 3_scatter_discount_efficiency.png")
     plt.close()
 
@@ -284,7 +284,7 @@ def create_visualizations(df):
     plt.xticks(rotation=45)
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(os.path.join(VIZ_DIR, '4_line_margin_trends.png'), dpi=300, bbox_inches='tight')
+    plt.savefig(VIZ_DIR / "4_line_margin_trends.png", dpi=300, bbox_inches="tight")
     print("✓ Saved: 4_line_margin_trends.png")
     plt.close()
 
@@ -310,11 +310,11 @@ def generate_summary_report(df):
 
     # Save summary
     summary_df = pd.DataFrame([summary])
-    summary_df.to_csv(os.path.join(OUTPUT_DIR, 'summary_statistics.csv'), index=False)
+    summary_df.to_csv(OUTPUT_DIR / "summary_statistics.csv", index=False)
     print("\n✓ Saved: summary_statistics.csv")
 
 def main():
-    """Main execution function."""
+    """Execute discount optimization analysis."""
     print("="*70)
     print("  DISCOUNT OPTIMIZATION ANALYSIS")
     print("  Business Goal: Maximize profit margins through strategic pricing")
