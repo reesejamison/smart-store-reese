@@ -877,6 +877,99 @@ The warehouse version includes unfiltered data (with "Unknown" region), showing 
 
 **Next Steps:** Schedule monthly refresh of both analyses; compare results to validate warehouse data quality
 
+---
+
+## Project 7: Custom BI Project - Discount Optimization Analysis
+
+### Section 1: Business Goal
+Optimize product pricing and discount strategy by analyzing discount effectiveness across product categories and store locations to maximize profit margins while maintaining sales velocity.
+
+### Section 2: Data Source
+- **Sales Data**: `data/prepared/sales_data_prepared.csv` (1,978 transactions)
+- **Products Data**: `data/prepared/products_data_prepared.csv` (98 products)
+- **Key Fields**: SaleAmount, DiscountPercent, Category, StoreID, ProductID, StockQuantity
+
+### Section 3: Tools Used
+- **Python 3.12** with pandas for data analysis
+- **Matplotlib & Seaborn** for visualizations
+- **SQLite** (optional) for warehouse integration
+- **Git** for version control
+
+### Section 4: Workflow & Logic
+
+**OLAP Techniques:**
+1. **Slicing**: Filter by single dimension (Electronics only, or Store 402 only)
+2. **Dicing**: Multi-dimensional filtering (Electronics + High Discount + Low Stock)
+3. **Drilldown**: Category → Store → Discount Tier → Individual Products
+4. **Aggregations**: SUM(revenue), AVG(discount), COUNT(transactions), calculated net margin
+
+**Analysis Flow:**
+```
+Load Data → Clean & Join → Calculate Metrics → Slice/Dice → Visualize → Generate Insights
+```
+
+### Section 5: Results
+
+**Key Findings:**
+- **Average discount varies by category**: Electronics (21.7%), Clothing (23.1%), Office (22.8%), Home (22.4%)
+- **Store performance differences**: Revenue per store ranges from $237K to $332K
+- **Discount efficiency**: Higher discounts don't always correlate with higher sales volume
+- **Margin impact**: Net revenue is ~77% of gross revenue due to discounting
+
+**Visualizations Generated:**
+1. Bar chart: Average discount % by category
+2. Heatmap: Store × Category revenue matrix
+3. Scatter plot: Discount % vs Sales Volume (shows efficiency)
+4. Line chart: Net margin % trends over time
+
+### Section 6: Suggested Business Actions
+
+1. **Reduce over-discounting** - Electronics maintains sales with lower discounts; cap at 20%
+2. **Replicate best practices** - Study high-performing stores and train others
+3. **Strategic clearance** - Target discounts only on high-stock, slow-moving items
+4. **Category pricing rules** - Set maximum discount guidelines per category
+5. **Inventory optimization** - Allocate high-margin products to efficient stores
+
+**Expected Impact**: 3-5% margin improvement, reduced inventory holding costs by 10%
+
+### Section 7: Challenges
+
+1. **Data Quality**: Missing supplier data, inconsistent product naming required cleaning
+2. **Metric Calculation**: Complex net margin formula accounting for variable discounts
+3. **Limited Store Context**: Only StoreID available, no geographic/demographic data
+4. **Seasonality**: Difficult to isolate strategic discounting from seasonal patterns
+5. **Visualization Selection**: Balancing detail vs. clarity for executive audience
+
+### Section 8: Ethical Considerations
+
+**Data Responsibility:**
+- Analysis uses aggregated sales data, no personally identifiable customer information
+- All insights based on historical transactions, not predictive profiling
+
+**Bias Concerns:**
+- Store performance comparisons could unfairly penalize locations with different demographics
+- Recommendation: Consider socioeconomic factors before reallocating inventory
+
+**Incomplete Data Risks:**
+- Missing supplier and geographic data limits context for recommendations
+- Action: Validate insights with store managers before implementing changes
+
+**Responsible Use:**
+- Discount optimization should not exploit price-sensitive customers
+- Maintain fair pricing across all store locations
+- Use insights to improve efficiency, not to manipulate vulnerable populations
+
+**AI/Automation:**
+- This analysis used traditional statistical methods, not AI/ML
+- If implementing automated pricing, require human review for ethical compliance
+- Monitor for unintended consequences (e.g., certain demographics priced out)
+
+---
+
+**Analysis Code**: `src/analytics_project/olap/discount_optimization_analysis.py`
+**Full Documentation**: `docs/CUSTOM_BI_PROJECT_PLAN.md`
+**Output Files**: `src/analytics_project/olap/output/discount_*`
+
 
 
 
