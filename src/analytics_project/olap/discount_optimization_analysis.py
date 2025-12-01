@@ -1,9 +1,11 @@
-"""
-OLAP Analysis: Product Pricing & Discount Optimization
+"""OLAP Analysis: Product Pricing & Discount Optimization.
+
 Business Goal: Optimize product mix and pricing strategy by analyzing discount
 effectiveness across product categories and store locations to maximize profit
 margins while maintaining sales velocity.
 """
+
+from pathlib import Path
 
 import pandas as pd
 import numpy as np
@@ -17,10 +19,10 @@ sns.set_style("whitegrid")
 plt.rcParams['figure.figsize'] = (12, 6)
 
 # Create output directories
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output')
-VIZ_DIR = os.path.join(os.path.dirname(__file__), 'visualizations')
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(VIZ_DIR, exist_ok=True)
+OUTPUT_DIR = Path(__file__).parent / "output"
+VIZ_DIR = Path(__file__).parent / "visualizations"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+VIZ_DIR.mkdir(parents=True, exist_ok=True)
 
 def load_data():
     """Load and prepare data from CSV files."""
